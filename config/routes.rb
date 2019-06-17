@@ -5,11 +5,9 @@ get '/' => 'home#index'
 
 resources :users, param: :_username
 post '/auth/login', to: 'authentication#login'
-get '/*a', to: 'application#not_found'
 
 api_routes = proc do
-  resources :banks, only: [:show, :index]
-  resources :branches, only: [:index]
+  resources :branches, only: [:index,:show]
 end
 
 scope '/api/' do
