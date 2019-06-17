@@ -2,12 +2,6 @@ class Bank < ApplicationRecord
 
   self.table_name = "banks"
 
-
-  def decorate
-    {
-      id: id,
-      name: name
-    }
-  end
+  has_many :branches, class_name: 'Branch'
 
 end
