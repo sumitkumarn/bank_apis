@@ -13,7 +13,7 @@ module ApiConstants
     page: 1
   }
 
-  DEFAULT_PARAMS = %w(controller action)
+  DEFAULT_PARAMS = %w(controller action auth)
 
   PAGINATE_PARAMS = %w(page per_page)
 

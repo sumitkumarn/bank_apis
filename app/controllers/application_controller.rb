@@ -1,17 +1,34 @@
-require 'pagy'
-require 'pagy/extras/countless'
-require 'pagy/extras/array'
-require 'pagy/extras/overflow' #added to handle overflow page issue
 class ApplicationController < ActionController::Base
 
   include ApiConstants
 
   rescue_from ActionController::UnpermittedParameters, with: :invalid_field_handler
+
   before_action :authorize_request
-  before_action :validate_index_params, only: [:index]
+  before_action :validate_index_params, only: :index
+  before_action :load_objects, only: :index
+  before_action :load_object, only: :show
+  
+  def index
+    if @items.present?
+      render_blueprinter(@items,:api_v1,root.pluralize)
+    else
+      log_and_render_error(API_ERROR_MAPPINGS[:NO_CONTENT]) 
+    end
+  end
+
+  def show
+    if @item.present?
+      render_blueprinter(@item,:api_v1_detail,root)
+    else
+      log_and_render_error(API_ERROR_MAPPINGS[:RESOURCE_NOT_FOUND])
+    end
+  end
+
+private
 
   def authorize_request
-    header = request.headers['Authorization']
+    header = request.headers['Authorization'] || params[:auth]
     header = header.split(' ').last if header
     begin
       @decoded = JsonWebToken.decode(header)
@@ -52,18 +69,9 @@ class ApplicationController < ActionController::Base
     log_and_render_error(API_ERROR_MAPPINGS[:BAD_REQUEST],errors)
   end
 
-  # will take scoper as one argument.
-  def load_objects(items = scoper)
-    @items = paginate_items(items)
-  end
-
   def paginate_items(items)
-    is_array = !items.respond_to?(:scoped) # check if it is array or AR
-    paginated_items = items.paginate(paginate_options(is_array))
-
-    # next page exists if scoper is array & next_page is not nil or
-    # next page exists if scoper is AR & collection length > per_page
-    next_page_exists = paginated_items.length > @per_page || paginated_items.next_page && is_array
+    paginated_items = items.paginate(paginate_options)
+    next_page_exists = paginated_items.length > @per_page || paginated_items.next_page
     add_link_header(page: (page + 1)) if next_page_exists
     paginated_items[0..(@per_page - 1)] # get paginated_collection of length 'per_page'
   end
@@ -73,9 +81,6 @@ class ApplicationController < ActionController::Base
     response.headers['Link'] = construct_link_header(query_parameters)
   end
 
-  def add_total_entries(total_items)
-    response.headers['X-Search-Results-Count'] = total_items.to_s
-  end
   # Construct link header for paginated collection
   def construct_link_header(updated_query_parameters)
     query_string = '?'
@@ -86,13 +91,11 @@ class ApplicationController < ActionController::Base
     "<#{url}>; rel=\"next\""
   end
 
-  def paginate_options(is_array = false)
+  def paginate_options
       options = {}
       @per_page = per_page # user given/defualt page number
-      options[:per_page] =  is_array ? @per_page : @per_page + 1 # + 1 to find next link unless scoper is array
-      options[:offset] = @per_page * (page - 1) unless is_array # assign offset unless scoper is array
+      options[:per_page] =  @per_page
       options[:page] = page
-      options[:total_entries] = options[:page] * options[:per_page] unless is_array # To prevent paginate from firing count query unless scoper is array
       options
   end
 
@@ -102,6 +105,10 @@ class ApplicationController < ActionController::Base
 
   def per_page
     (params[:per_page] || ApiConstants::DEFAULT_PAGINATE_OPTIONS[:per_page]).to_i
+  end
+
+  def render_blueprinter(items = nil,view=api_v1,_root)
+    render json: blueprint.render(items,view: view,root: _root || root), status: API_ERROR_MAPPINGS[:OK]
   end
 
 end
