@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   include ApiConstants
 
   rescue_from ActionController::UnpermittedParameters, with: :invalid_field_handler
-
+  before_action :authorize_request
   before_action :validate_index_params, only: [:index]
 
   def authorize_request
@@ -15,7 +15,6 @@ class ApplicationController < ActionController::Base
     header = header.split(' ').last if header
     begin
       @decoded = JsonWebToken.decode(header)
-      byebug
     rescue ActiveRecord::RecordNotFound => e
       render json: { errors: e.message }, status: :unauthorized
     rescue JWT::DecodeError => e
