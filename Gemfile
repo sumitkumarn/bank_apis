@@ -35,6 +35,11 @@ gem 'jbuilder', '~> 2.5'
 gem "will_paginate", "3.1.6"
 gem 'pagy', '1.2.1'
 
+# Use Json Web Token (JWT) for token based authentication
+gem 'jwt'
+# Use ActiveModel has_secure_password
+gem 'bcrypt', '~> 3.1.7'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password

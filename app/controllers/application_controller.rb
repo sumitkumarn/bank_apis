@@ -6,11 +6,26 @@ class ApplicationController < ActionController::Base
 
   include ApiConstants
 
-  protect_from_forgery with: :exception
   rescue_from ActionController::UnpermittedParameters, with: :invalid_field_handler
 
   before_action :validate_index_params, only: [:index]
 
+  def authorize_request
+    header = request.headers['Authorization']
+    header = header.split(' ').last if header
+    begin
+      @decoded = JsonWebToken.decode(header)
+      byebug
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { errors: e.message }, status: :unauthorized
+    rescue JWT::DecodeError => e
+      render json: { errors: e.message }, status: :unauthorized
+    end
+  end
+
+  def not_found
+    render json: { error: 'not_found' }
+  end
 
   def log_and_render_error(error_code,error_body=nil)
     log_error(error_code,error_body)

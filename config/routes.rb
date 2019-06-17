@@ -3,6 +3,10 @@ Rails.application.routes.draw do
 
 get '/' => 'home#index'
 
+resources :users, param: :_username
+post '/auth/login', to: 'authentication#login'
+get '/*a', to: 'application#not_found'
+
 api_routes = proc do
   resources :banks, only: [:show, :index]
   resources :branches, only: [:index]
