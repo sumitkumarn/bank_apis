@@ -30,7 +30,7 @@ private
   def validate_input_data
     errors = {}
     BranchConstants::INDEX_QUERY_PARAMS.each do |query_param|
-      if send("#{query_param}_from_cache").exclude?(params[query_param])
+      if send("#{query_param}_from_cache").exclude?(params[query_param].try(:upcase))
         errors[query_param] = "No #{query_param} found with the given value '#{params[query_param]}'"
       end
     end
