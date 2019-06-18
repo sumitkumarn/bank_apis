@@ -6,7 +6,7 @@ private
   def load_objects
     validate_input_data
     @items = Branch.joins(:bank).where(
-        banks: {name: params[:bank_name].upcase}, branches: {city: params[:city].upcase}
+        banks: {name: params[:bank_name].try(:upcase)}, branches: {city: params[:city].try(:upcase)}
       ) # Rails handles SQL injection when Active Record methods are used. So, no sanitization is done explicitly
     @items = paginate_items(@items)
   end
@@ -26,15 +26,30 @@ private
     end
   end
 
+  #checks if required params are passed in the URL
+  def check_missing_params
+    missing_param_errors = {}
+    missing_keys = BranchConstants::INDEX_QUERY_PARAMS - params.keys
+    missing_keys.each do |missing_key|
+      missing_param_errors[missing_key] = 'Missing in URL Query Param.'
+    end
+    missing_param_errors
+  end
+
   #check if the values given in the query params are valid resources or not. If not, raise 400 with appropriate message.
   def validate_input_data
     errors = {}
-    BranchConstants::INDEX_QUERY_PARAMS.each do |query_param|
-      if send("#{query_param}_from_cache").exclude?(params[query_param].try(:upcase))
-        errors[query_param] = "No #{query_param} found with the given value '#{params[query_param]}'"
+    missing_param_errors = check_missing_params
+    if missing_param_errors.blank?
+      BranchConstants::INDEX_QUERY_PARAMS.each do |query_param|
+        if send("#{query_param}_from_cache").exclude?(params[query_param].try(:upcase))
+          errors[query_param] = "No #{query_param} found with the given value '#{params[query_param]}'"
+        end
       end
+      log_and_render_error(API_ERROR_MAPPINGS[:BAD_REQUEST],errors) if errors.any?
+    else
+      log_and_render_error(API_ERROR_MAPPINGS[:BAD_REQUEST],missing_param_errors)
     end
-    log_and_render_error(API_ERROR_MAPPINGS[:BAD_REQUEST_ERROR],errors) if errors.any?
   end
 
   #methods invoked from render_blueprinter method of application_controller 
