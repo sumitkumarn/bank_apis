@@ -31,7 +31,7 @@ private
     header = header.split(' ').last if header
     begin
       @decoded = JsonWebToken.decode(header)
-      byebug
+      @decoded.key?(:user_id) && User.find(@decoded[:user_id])
     rescue ActiveRecord::RecordNotFound => e
       render json: { errors: e.message }, status: API_ERROR_MAPPINGS[:UNAUTHORIZED]
     rescue JWT::DecodeError => e
