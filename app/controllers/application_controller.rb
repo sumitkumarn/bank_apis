@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
 
   before_action :authorize_request
   before_action :validate_query_params, only: [:index,:show]
+  before_action :validate_limit_offset, only: [:index]
   before_action :load_objects, only: :index
   before_action :load_object, only: :show
   
@@ -68,6 +69,17 @@ private
     invalid_fields = exception.params
     errors = Hash[invalid_fields.map { |v| [v, :unpermitted_param] }]
     log_and_render_error(API_ERROR_MAPPINGS[:BAD_REQUEST],errors)
+  end
+
+  def validate_limit_offset
+    errors = {}
+    if params[:limit].present? && !params[:limit].to_i.between?(1,DEFAULT_PAGINATE_OPTIONS[:max_limit])
+      errors[:limit] = 'Invalid value for limit parameter. Value should be in the range 1 to 100'
+    end
+    if params[:offset].present? && params[:offset].to_i < 0
+      errors[:offset] = 'Invalid value for offset parameter. Value should be greater than or equal to 0'
+    end
+    log_and_render_error(API_ERROR_MAPPINGS[:BAD_REQUEST],errors) if errors.any?
   end
 
   #paginate records based on the given limit and offset values
