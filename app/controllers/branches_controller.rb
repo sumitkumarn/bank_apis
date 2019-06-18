@@ -6,13 +6,13 @@ private
   def load_objects
     validate_input_data
     @items = Branch.joins(:bank).where(
-        banks: {name: params[:bank_name]}, branches: {city: params[:city]}
+        banks: {name: params[:bank_name].upcase}, branches: {city: params[:city].upcase}
       ) # Rails handles SQL injection when Active Record methods are used. So, no sanitization is done explicitly
     @items = paginate_items(@items)
   end
 
   def load_object
-    params[:ifsc] = params[:id] if params[:id].present?
+    params[:ifsc] = params[:id].upcase if params[:id].present?
     @item = Branch.find_by_ifsc(params[:ifsc]) # No need to sanitize for sql injection. 
   end
 
