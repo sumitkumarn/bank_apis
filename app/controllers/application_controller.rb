@@ -1,20 +1,19 @@
 class ApplicationController < ActionController::Base
 
+  #The parent class for all controller class in the application.
+  #Has some methods for default validations of query parameters and also handles authentication
+
   include ApiConstants
 
   rescue_from ActionController::UnpermittedParameters, with: :invalid_field_handler
 
   before_action :authorize_request
-  before_action :validate_index_params, only: :index
+  before_action :validate_query_params, only: [:index,:show]
   before_action :load_objects, only: :index
   before_action :load_object, only: :show
   
   def index
-    if @items.present?
       render_blueprinter(@items,:api_v1,root.pluralize)
-    else
-      log_and_render_error(API_ERROR_MAPPINGS[:NO_CONTENT]) 
-    end
   end
 
   def show
@@ -26,16 +25,17 @@ class ApplicationController < ActionController::Base
   end
 
 private
-
+  #handle authorization
   def authorize_request
-    header = request.headers['Authorization'] || params[:auth]
+    header = request.headers['Authorization'] || params[:auth] #params[:auth] is added for testing apis from browser.
     header = header.split(' ').last if header
     begin
       @decoded = JsonWebToken.decode(header)
+      byebug
     rescue ActiveRecord::RecordNotFound => e
-      render json: { errors: e.message }, status: :unauthorized
+      render json: { errors: e.message }, status: API_ERROR_MAPPINGS[:UNAUTHORIZED]
     rescue JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
+      render json: { errors: e.message }, status: API_ERROR_MAPPINGS[:UNAUTHORIZED]
     end
   end
 
@@ -58,17 +58,19 @@ private
     Rails.logger.info("Error message #{error_body}")
   end
 
-  def validate_index_params(additional_params)
+  #This method raises Unpermitted params exception which is caught and rescued by invalid_field_handler method
+  def validate_query_params(additional_params = nil)
     params.permit(*ApiConstants::DEFAULT_INDEX_PARAMS, *additional_params)
   end
 
   def invalid_field_handler(exception) # called if extra fields are present in params.
     Rails.logger.error("API Unpermitted Parameters. Params : #{params.inspect} Exception: #{exception.class}  Exception Message: #{exception.message}")
     invalid_fields = exception.params
-    errors = Hash[invalid_fields.map { |v| [v, :invalid_field] }]
+    errors = Hash[invalid_fields.map { |v| [v, :unpermitted_param] }]
     log_and_render_error(API_ERROR_MAPPINGS[:BAD_REQUEST],errors)
   end
 
+  #paginate records based on the given limit and offset values
   def paginate_items(items)
     paginated_items = items.paginate(paginate_options)
     next_page_exists = paginated_items.length > @per_page || paginated_items.next_page
@@ -110,5 +112,18 @@ private
   def render_blueprinter(items = nil,view=api_v1,_root)
     render json: blueprint.render(items,view: view,root: _root || root), status: API_ERROR_MAPPINGS[:OK]
   end
+
+  def show?
+    @show ||= current_action?('show')
+  end
+
+  def index?
+    @index ||= current_action?('index')
+  end
+
+  def current_action?(action)
+    action_name.to_s == action
+  end
+
 
 end

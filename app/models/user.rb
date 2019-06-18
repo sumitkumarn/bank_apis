@@ -1,6 +1,7 @@
 class User < ApplicationRecord
-  has_secure_password
-  #mount_uploader :avatar, AvatarUploader
+  has_secure_password #uses bcrypt gem to encrypt password
+
+  #Active model validations for user attributes
   validates :email, presence: true, uniqueness: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :username, presence: true, uniqueness: true

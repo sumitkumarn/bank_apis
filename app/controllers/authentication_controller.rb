@@ -2,6 +2,8 @@ class AuthenticationController < ApplicationController
   before_action :authorize_request, except: :login
 
   # POST /auth/login
+  #If login is success, then jwt token is sent as response along with expiry in epoch
+  #In case of login failure, unauthorized response is sent back.
   def login
     @user = User.find_by_email(params[:email])
     if @user&.authenticate(params[:password])
@@ -15,7 +17,7 @@ class AuthenticationController < ApplicationController
   end
 
   private
-
+  #whitelist login params
   def login_params
     params.permit(:email, :password)
   end

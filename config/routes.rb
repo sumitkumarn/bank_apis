@@ -8,6 +8,7 @@ post '/auth/login', to: 'authentication#login'
 
 api_routes = proc do
   resources :branches, only: [:index,:show]
+  resources :banks, only: [:show]
 end
 
 scope '/api/' do

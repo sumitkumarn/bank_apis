@@ -4,7 +4,8 @@ module ApiConstants
     BAD_REQUEST: 400,
     RESOURCE_NOT_FOUND: 404,
     OK: 200,
-    NO_CONTENT: 204
+    NO_CONTENT: 204,
+    UNAUTHORIZED: 401
   }
 
   DEFAULT_PAGINATE_OPTIONS = {
@@ -13,7 +14,7 @@ module ApiConstants
     page: 1
   }
 
-  DEFAULT_PARAMS = %w(controller action auth)
+  DEFAULT_PARAMS = %w(controller action auth id)
 
   PAGINATE_PARAMS = %w(page per_page)
 
