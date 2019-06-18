@@ -9,14 +9,14 @@ module ApiConstants
   }
 
   DEFAULT_PAGINATE_OPTIONS = {
-    per_page: 30,
-    max_per_page: 100,
-    page: 1
+    limit: 30,
+    max_limit: 100,
+    offset: 0
   }
 
   DEFAULT_PARAMS = %w(controller action auth id)
 
-  PAGINATE_PARAMS = %w(page per_page)
+  PAGINATE_PARAMS = %w(offset limit)
 
   DEFAULT_INDEX_PARAMS = DEFAULT_PARAMS | PAGINATE_PARAMS 
 

@@ -73,9 +73,9 @@ private
   #paginate records based on the given limit and offset values
   def paginate_items(items)
     paginated_items = items.paginate(paginate_options)
-    next_page_exists = paginated_items.length > @per_page || paginated_items.next_page
-    add_link_header(page: (page + 1)) if next_page_exists
-    paginated_items[0..(@per_page - 1)] # get paginated_collection of length 'per_page'
+    next_page_exists = paginated_items.length > @limit || paginated_items.next_page
+    add_link_header(offset: (offset + 1)) if next_page_exists
+    paginated_items[0..(@limit - 1)] # get paginated_collection of length 'limit'
   end
 
   # Add link header if next page exists.
@@ -95,18 +95,18 @@ private
 
   def paginate_options
       options = {}
-      @per_page = per_page # user given/defualt page number
-      options[:per_page] =  @per_page
-      options[:page] = page
+      @limit = limit # user given/defualt offset number
+      options[:per_page] =  @limit
+      options[:page] = offset + 1
       options
   end
 
-  def page
-    (params[:page] || ApiConstants::DEFAULT_PAGINATE_OPTIONS[:page]).to_i
+  def offset
+    (params[:offset] || ApiConstants::DEFAULT_PAGINATE_OPTIONS[:offset]).to_i
   end
 
-  def per_page
-    (params[:per_page] || ApiConstants::DEFAULT_PAGINATE_OPTIONS[:per_page]).to_i
+  def limit
+    (params[:limit] || ApiConstants::DEFAULT_PAGINATE_OPTIONS[:limit]).to_i
   end
 
   def render_blueprinter(items = nil,view=api_v1,_root)
