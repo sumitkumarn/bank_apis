@@ -46,7 +46,7 @@ private
   def log_and_render_error(error_code,error_body=nil)
     log_error(error_code,error_body)
     if error_body.present?
-      render json: error_body, status: error_code
+      render json: {error: error_body}, status: error_code
     else
       head error_code
     end
