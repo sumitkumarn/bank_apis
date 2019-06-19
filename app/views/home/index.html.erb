@@ -18,7 +18,9 @@
  <td>https://bankify.herokuapp.com/api/v1/branches</td>
  <td>GET</td>
  <td>city,bank_name</td>
- <td>{
+ <td> <i><b>HTTP CODE : 200</b></i> <br/>
+  <br/> <b/>Link header in the response header contains the URL for the next page.</b><br/>
+  {
 &nbsp;&nbsp;"branches": [<br/>
 &nbsp;&nbsp;{<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;"ifsc": "UTIB0000006",<br/>
@@ -45,7 +47,8 @@
  <td>https://bankify.herokuapp.com/api/v1/branches/{ifsc}</td>
  <td>GET</td>
  <td> -- </td>
- <td>{<br/>
+ <td><i><b>HTTP CODE : 200</b></i> <br/>
+  {<br/>
 &nbsp;&nbsp;"branch": {<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;"ifsc": "UTIB0000256",<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;"branch": "PALANPUR  GUJRAT",<br/>
@@ -63,7 +66,8 @@
   <td>https://bankify.herokuapp.com/api/v1/banks/{id}</td>
   <td>GET</td>
   <td> -- </td>
-  <td>{<br/>
+  <td><i><b>HTTP CODE : 200</b></i> <br/>
+    {<br/>
     &nbsp;&nbsp; "bank": {<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;"id": 13,<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;"name" : "AXIS BANK"<br/>
