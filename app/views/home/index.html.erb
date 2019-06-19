@@ -2,22 +2,75 @@
 
 <h4>Please check the supported APIs<h4>
 
+<h3><b>Authorization : </b></h3>
+
+<b style="color: red">Please add the authorization header in every request with the JWT Token</b>
+<br/><br/>
 <b>Endpoints</b>
 <table border="1" cellpadding="2">
 <tr>
   <td><b>URL</b></td>
   <td><b>HTTP Method</b></td>
   <td><b>Query Parameters</b></td>
+  <td><b>Sample Response</b></td>
 </tr>
 <tr>
  <td>https://bankify.herokuapp.com/api/v1/branches</td>
  <td>GET</td>
  <td>city,bank_name</td>
+ <td>{
+&nbsp;&nbsp;"branches": [<br/>
+&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"ifsc": "UTIB0000006",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"branch": "CHENNAI",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"address": "82 DR RADHAKRISHNAN SALAI  MYLAPORE, CHENNAI",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"city": "CHENNAI",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"district": "CHENNAI",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"state": "TAMIL NADU",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"bank_id": 13<br/>
+&nbsp;&nbsp;},<br/>
+&nbsp;&nbsp;{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"ifsc": "UTIB0000014",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"branch": "T NAGAR",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"address": "79, G N CHETTY ROAD  T. NAGAR",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"city": "CHENNAI",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"district": "CHENNAI",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"state": "TAMIL NADU",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"bank_id": 13<br/>
+&nbsp;&nbsp;},<br/>
+&nbsp;&nbsp;]<br/>
+}</td>
 </tr>
 <tr>
- <td>https://bankify.herokuapp.com/api/v1/bank</td>
+ <td>https://bankify.herokuapp.com/api/v1/branches/{ifsc}</td>
  <td>GET</td>
- <td>ifsc</td>
+ <td> -- </td>
+ <td>{<br/>
+&nbsp;&nbsp;"branch": {<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"ifsc": "UTIB0000256",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"branch": "PALANPUR  GUJRAT",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"address": "MOVIE WORLD BUILDING  COLLEGE ROAD,",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"city": "PALANPUR",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"district": "BANASKANTHA",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"state": "GUJARAT",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"bank_id": 13,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"bank_name": "AXIS BANK"<br/>
+&nbsp;&nbsp;}<br/>
+}<br/>
+</td>
+</tr>
+<tr>
+  <td>https://bankify.herokuapp.com/api/v1/banks/{id}</td>
+  <td>GET</td>
+  <td> -- </td>
+  <td>{<br/>
+    &nbsp;&nbsp; "bank": {<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;"id": 13,<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;"name" : "AXIS BANK"<br/>
+    &nbsp;&nbsp;}<br/>
+  }
+  <br/>
+  </td>
 </tr>
 </table>
 
