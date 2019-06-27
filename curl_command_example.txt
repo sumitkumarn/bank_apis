@@ -1,8 +1,8 @@
 1. Request for listing all branch details given a bank and city name
 
-curl -H "Authorization:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1NjEyMzMxNDJ9.NXJ_ZS7IZLiwMXCuLcvjs8UvpxkXUSp9sO74UV_rKJs" -X GET 'https://bankify.herokuapp.com/api/v1/branches?city=CHENNAI&bank_name=AXIS%20BANK'
+curl -H "Authorization:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1NjIwNzk2OTR9.779KzztbYg2M0kJMtkZYYDydw8H_AmB5saxm8yKS5HA" -X GET 'https://bankify.herokuapp.com/api/v1/branches?city=CHENNAI&bank_name=AXIS%20BANK'
 
 
 2. Displaying a bank details given ifsc code of a branch
 
-curl -H "Authorization:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1NjEyMzMxNDJ9.NXJ_ZS7IZLiwMXCuLcvjs8UvpxkXUSp9sO74UV_rKJs" -X GET 'https://bankify.herokuapp.com/api/v1/branches/UTIB0000256'
+curl -H "Authorization:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1NjIwNzk2OTR9.779KzztbYg2M0kJMtkZYYDydw8H_AmB5saxm8yKS5HA" -X GET 'https://bankify.herokuapp.com/api/v1/branches/UTIB0000256'
